@@ -1,0 +1,499 @@
+/* === Reset & Base === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.hidden { display: none !important; }
+
+:root {
+  --bg: #1a1a2e;
+  --bg-light: #16213e;
+  --bg-card: #1f2b47;
+  --accent: #e94560;
+  --accent-hover: #ff6b81;
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --text: #eee;
+  --text-dim: #8899aa;
+  --rh-color: #4fc3f7;    /* Right hand - blue */
+  --lh-color: #ef5350;    /* Left hand - red */
+  --piano-height: 160px;
+  --header-height: 60px;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* === Header === */
+#header {
+  height: var(--header-height);
+  background: var(--bg-light);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+#header h1 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+#midi-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.indicator.connected { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.indicator.disconnected { background: #666; }
+
+nav {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-dim);
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+.nav-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* === Notation Strip === */
+#notation-strip {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 2px solid rgba(255,255,255,0.08);
+  background: var(--bg-light);
+}
+
+.notation-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--bg-light);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.notation-label {
+  font-size: 1rem;
+  color: var(--accent);
+  margin-right: 4px;
+}
+
+.notation-body {
+  position: relative;
+  flex: 1;
+}
+
+.notation-scroll-area {
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 205px;
+  background: #f8f9fc;
+  cursor: grab;
+}
+
+.notation-scroll-area:active {
+  cursor: grabbing;
+}
+
+#notation-svg {
+  display: inline-block;
+  min-width: 100%;
+  vertical-align: top;
+}
+
+#notation-svg svg {
+  display: block;
+}
+
+.notation-now-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 120px;
+  width: 2px;
+  background: rgba(233, 69, 96, 0.55);
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: 0 0 6px rgba(233, 69, 96, 0.4);
+}
+
+/* === Main Content === */
+#main-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.view { display: none; height: 100%; }
+.view.active { display: flex; flex-direction: column; }
+
+/* === Lesson List === */
+#lesson-list {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  align-content: start;
+  overflow-y: auto;
+}
+
+.lesson-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.lesson-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(233, 69, 96, 0.15);
+}
+
+.lesson-card.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lesson-card.locked:hover {
+  border-color: rgba(255,255,255,0.06);
+  transform: none;
+  box-shadow: none;
+}
+
+.lesson-card .lesson-number {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.lesson-card .lesson-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 4px 0;
+}
+
+.lesson-card .lesson-skills {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.lesson-card .lesson-stars {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 0.9rem;
+}
+
+.lesson-card .lesson-stars .star { color: #555; }
+.lesson-card .lesson-stars .star.earned { color: var(--warning); }
+
+/* === Level Header === */
+.level-header {
+  grid-column: 1 / -1;
+  padding: 8px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-top: 8px;
+}
+
+.level-header:first-child { margin-top: 0; }
+
+/* === Active Lesson View === */
+#lesson-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--bg-light);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+#lesson-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+#lesson-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tempo-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+#lesson-tempo {
+  font-size: 0.85rem;
+  min-width: 40px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+#lesson-instruction {
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.02);
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+
+#falling-notes-canvas {
+  flex: 1;
+  width: 100%;
+  background: linear-gradient(180deg, var(--bg) 0%, rgba(26,26,46,0.95) 100%);
+}
+
+/* === Free Play === */
+#freeplay-tools {
+  padding: 20px;
+}
+
+.tool-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card);
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.tool-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 80px;
+}
+
+#tempo-slider {
+  flex: 1;
+  max-width: 200px;
+  accent-color: var(--accent);
+}
+
+#tempo-display {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  min-width: 70px;
+}
+
+/* === Progress View === */
+#progress-view {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+#progress-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-card .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+#progress-lessons h3 {
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.progress-lesson-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--bg-card);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+}
+
+.progress-lesson-row .stars {
+  margin-left: auto;
+  color: var(--warning);
+}
+
+.progress-bar-bg {
+  width: 100px;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+/* === Piano Container === */
+#piano-container {
+  height: var(--piano-height);
+  background: var(--bg-light);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#piano-canvas {
+  height: 100%;
+}
+
+/* === Buttons === */
+.tool-btn {
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.tool-btn:hover { border-color: rgba(255,255,255,0.3); }
+.tool-btn.primary { background: var(--accent); border-color: var(--accent); }
+.tool-btn.primary:hover { background: var(--accent-hover); }
+.tool-btn.small { padding: 4px 10px; font-size: 0.75rem; }
+.tool-btn.active { background: var(--success); border-color: var(--success); }
+
+/* === Score Overlay === */
+#score-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+#score-overlay.hidden { display: none; }
+
+#score-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 32px 40px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  min-width: 300px;
+}
+
+#score-card h2 {
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+}
+
+#score-stars {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+#score-details {
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+#score-card .tool-btn {
+  margin: 0 6px;
+  padding: 8px 20px;
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* === Keyboard hints overlay === */
+.keyboard-hint {
+  position: fixed;
+  bottom: calc(var(--piano-height) + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  z-index: 10;
+  pointer-events: none;
+}

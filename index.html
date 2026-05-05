@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piano Mentor</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header id="header">
+      <h1>Piano Mentor</h1>
+      <div id="midi-status">
+        <span id="midi-indicator" class="indicator disconnected"></span>
+        <span id="midi-label">No MIDI device</span>
+      </div>
+      <nav>
+        <button class="nav-btn active" data-view="lessons">Lessons</button>
+        <button class="nav-btn" data-view="freeplay">Free Play</button>
+        <button class="nav-btn" data-view="progress">Progress</button>
+      </nav>
+    </header>
+
+    <!-- Notation Strip (shown when a lesson is active) -->
+    <div id="notation-strip" class="hidden">
+      <div class="notation-controls">
+        <span class="notation-label">&#9835;</span>
+        <button id="notation-mode" class="tool-btn small active" title="Toggle auto-scroll / static">Auto-scroll</button>
+        <button id="notation-letters" class="tool-btn small" title="Toggle note letters">A</button>
+        <button id="notation-zoom-out" class="tool-btn small" title="Zoom out">&#8722;</button>
+        <button id="notation-zoom-in" class="tool-btn small" title="Zoom in">+</button>
+        <button id="notation-fit" class="tool-btn small" title="Fit all bars on screen">Fit</button>
+      </div>
+      <div class="notation-body">
+        <div class="notation-scroll-area">
+          <div id="notation-svg"></div>
+        </div>
+        <div class="notation-now-line hidden" id="notation-now-line"></div>
+      </div>
+    </div>
+
+    <!-- Main content area -->
+    <main id="main-content">
+      <!-- Lessons view -->
+      <section id="lessons-view" class="view active">
+        <div id="lesson-list"></div>
+      </section>
+
+      <!-- Free play view -->
+      <section id="freeplay-view" class="view">
+        <div id="freeplay-tools">
+          <div class="tool-group">
+            <label>Metronome</label>
+            <button id="metronome-toggle" class="tool-btn">Off</button>
+            <input type="range" id="tempo-slider" min="40" max="200" value="100">
+            <span id="tempo-display">100 BPM</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progress view -->
+      <section id="progress-view" class="view">
+        <div id="progress-stats"></div>
+        <div id="progress-lessons"></div>
+      </section>
+
+      <!-- Active lesson view (hidden until a lesson starts) -->
+      <section id="lesson-active-view" class="view">
+        <div id="lesson-header">
+          <button id="back-to-lessons" class="tool-btn">Back</button>
+          <h2 id="lesson-title"></h2>
+          <div id="lesson-tools">
+            <button id="lesson-listen" class="tool-btn">Listen</button>
+            <button id="lesson-restart" class="tool-btn hidden">Restart</button>
+            <button id="lesson-start" class="tool-btn primary">Start</button>
+            <div class="tempo-control">
+              <button id="tempo-down" class="tool-btn small">-</button>
+              <span id="lesson-tempo">100%</span>
+              <button id="tempo-up" class="tool-btn small">+</button>
+            </div>
+          </div>
+        </div>
+        <div id="lesson-instruction"></div>
+        <canvas id="falling-notes-canvas"></canvas>
+      </section>
+    </main>
+
+    <!-- Piano keyboard (always visible at bottom) -->
+    <div id="piano-container">
+      <canvas id="piano-canvas"></canvas>
+    </div>
+
+    <!-- Score overlay -->
+    <div id="score-overlay" class="hidden">
+      <div id="score-card">
+        <h2>Lesson Complete!</h2>
+        <div id="score-stars"></div>
+        <div id="score-details"></div>
+        <button id="score-retry" class="tool-btn">Try Again</button>
+        <button id="score-next" class="tool-btn primary">Next Lesson</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/notation.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/midi.js"></script>
+  <script src="js/piano.js"></script>
+  <script src="js/falling-notes.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
